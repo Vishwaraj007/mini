@@ -45,7 +45,7 @@ with st.spinner("Analyzing image..."):
         _, predicted = torch.max(outputs, 1)
 
 st.success(f"Prediction Index: {predicted.item()}")
-```
+
 
 else:
 st.info("Please upload an image to start.")

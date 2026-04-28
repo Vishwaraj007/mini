@@ -10,7 +10,7 @@ st.set_page_config(page_title="Dog Breed Detector", layout="centered")
 # Load pretrained model
 
 @st.cache_resource
-    def load_model():
+def load_model():
     model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.DEFAULT)
     model.eval()
     return model

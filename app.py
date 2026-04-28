@@ -4,20 +4,21 @@ from torchvision import models, transforms
 from PIL import Image
 import urllib.request
 
-# -------------------- PAGE CONFIG --------------------
+# Page config
 
-st.set_page_config(
-page_title="Dog Breed Detector",
-layout="centered"
-)
+st.set_page_config(page_title="Dog Breed Detector", layout="centered")
 
 # Hide sidebar
 
-st.markdown(""" <style>
-section[data-testid="stSidebar"] {display: none;} </style>
+st.markdown("""
+
+<style>
+section[data-testid="stSidebar"] {display: none;}
+</style>
+
 """, unsafe_allow_html=True)
 
-# -------------------- LOAD MODEL --------------------
+# Load model
 
 @st.cache_resource
 def load_model():
@@ -27,7 +28,7 @@ return model
 
 model = load_model()
 
-# -------------------- LOAD LABELS --------------------
+# Load labels
 
 @st.cache_resource
 def load_labels():
@@ -37,7 +38,7 @@ return labels
 
 labels = load_labels()
 
-# -------------------- TRANSFORM --------------------
+# Transform
 
 transform = transforms.Compose([
 transforms.Resize((224, 224)),
@@ -48,17 +49,12 @@ std=[0.229, 0.224, 0.225]
 )
 ])
 
-# -------------------- UI --------------------
+# UI
 
 st.title("🐶 AI Dog Breed Detection System")
 st.write("Upload a dog image and the model will try to identify the breed.")
 
-uploaded_file = st.file_uploader(
-"Choose a dog image...",
-type=["jpg", "png", "jpeg"]
-)
-
-# -------------------- PREDICTION --------------------
+uploaded_file = st.file_uploader("Choose a dog image...", type=["jpg", "png", "jpeg"])
 
 if uploaded_file is not None:
 image = Image.open(uploaded_file).convert("RGB")
@@ -72,25 +68,19 @@ with st.spinner("Analyzing image..."):
         preds = model(img)
         probs = torch.nn.functional.softmax(preds[0], dim=0)
 
-# Top 3 predictions
 top_probs, top_idxs = torch.topk(probs, 3)
 results = [(labels[i], top_probs[j].item()) for j, i in enumerate(top_idxs)]
 
-# Filter dog-related predictions
 dog_keywords = ["dog", "retriever", "shepherd", "terrier", "hound", "spaniel"]
 filtered = [r for r in results if any(k in r[0] for k in dog_keywords)]
 
-# Select best result
 if filtered:
-    top_label = filtered[0][0]
-    top_prob = filtered[0][1] * 100
+    label, prob = filtered[0]
 else:
-    top_label = results[0][0]
-    top_prob = results[0][1] * 100
+    label, prob = results[0]
 
-# Display result
-st.success(f"Predicted Breed: {top_label.replace('_',' ').title()}")
-st.write(f"Confidence: {top_prob:.2f}%")
+st.success(f"Predicted Breed: {label.replace('_',' ').title()}")
+st.write(f"Confidence: {prob * 100:.2f}%")
 ```
 
 else:

@@ -37,7 +37,6 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Uploaded Image", use_column_width=True)
 
-```
 img = transform(image).unsqueeze(0)
 
 with st.spinner("Analyzing image..."):

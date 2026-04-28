@@ -48,4 +48,4 @@ st.success(f"Prediction Index: {predicted.item()}")
 
 
 else:
-st.info("Please upload an image to start.")
+    st.info("Please upload an image to start.")
